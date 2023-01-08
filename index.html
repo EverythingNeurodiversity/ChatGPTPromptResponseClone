@@ -3,6 +3,46 @@
 <head>
   <title>ChatGPT</title>
 </head>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  #prompt {
+    margin-bottom: 20px;
+  }
+  #response, #history {
+    margin-bottom: 40px;
+  }
+  #output-history {
+    max-height: 200px;
+    overflow-y: scroll;
+  }
+</style>
+<script>
+  function getResponse() {
+    // Get the user's prompt from the input field
+    const prompt = document.getElementById('input-prompt').value;
+
+    // Make a request to the language model API to get a response
+    fetch('/api/response', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({prompt: prompt})
+    })
+    .then(response => response.json())
+    .then(response => {
+      // Display the response in the output field
+      document.getElementById('output-response').innerHTML = response;
+
+      // Add the prompt and response to the history
+      const history = document.getElementById('output-history');
+      history.innerHTML += `<p><strong>${prompt}</strong><br>${response}</p>`;
+    });
+  }
+</script>
+
 <body>
   <div id="prompt">
     <p>Enter your prompt here:</p>
@@ -16,5 +56,12 @@
     <p>History:</p>
     <div id="output-history"></div>
   </div>
+  <div id="prompt">
+  <p>Enter your prompt here:</p>
+  <input type="text" id="input-prompt">
+  <button onclick="getResponse()">Get Response</button>
+</div>
+
+  
 </body>
 </html>
